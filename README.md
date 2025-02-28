@@ -1,4 +1,4 @@
-# JAVASQL
+# JAVA SQL
 การเขียนโปรแกรมภาษา JAVA ทำงานร่วมกับ Database
 
 # JAVA กับ SQLite
