@@ -35,7 +35,10 @@ SQLite ใช้ JDBC Driver (`sqlite-jdbc.jar`)
 เปิดไฟล์ `Main.java` พิมพ์ชุดคำสั่ง  
 
 ```java
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Main {
     public static void main(String[] args) {
@@ -71,3 +74,54 @@ public class Main {
 
 ---
 
+### ** ตัวอย่างคำสั่งการอ่านและการบันทึกข้อมูล **
+ชุดคำสั่ง
+
+```java
+import java.sql.*;
+
+public class Main {
+    public static void main(String[] args) {
+        String url = "jdbc:sqlite:database.db";
+
+        try (Connection conn = DriverManager.getConnection(url)) {
+            if (conn != null) {
+                System.out.println("เชื่อมต่อ SQLite สำเร็จ!");
+                insertData(conn, "Alice", 25);
+                insertData(conn, "Bob", 30);
+                fetchData(conn);
+            }
+        } catch (SQLException e) {
+            System.out.println("เกิดข้อผิดพลาด: " + e.getMessage());
+        }
+    }
+
+    // ฟังก์ชันเพิ่มข้อมูล
+    public static void insertData(Connection conn, String name, int age) {
+        String sql = "INSERT INTO users (name, age) VALUES (?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setInt(2, age);
+            pstmt.executeUpdate();
+            System.out.println("เพิ่มข้อมูล: " + name);
+        } catch (SQLException e) {
+            System.out.println("เกิดข้อผิดพลาดในการเพิ่มข้อมูล: " + e.getMessage());
+        }
+    }
+
+    // ฟังก์ชันดึงข้อมูลจาก SQLite
+    public static void fetchData(Connection conn) {
+        String sql = "SELECT * FROM users";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                System.out.println("ID: " + rs.getInt("id") + 
+                                   ", Name: " + rs.getString("name") + 
+                                   ", Age: " + rs.getInt("age"));
+            }
+        } catch (SQLException e) {
+            System.out.println("เกิดข้อผิดพลาดในการดึงข้อมูล: " + e.getMessage());
+        }
+    }
+}
+```
