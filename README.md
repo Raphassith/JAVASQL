@@ -64,6 +64,7 @@ public class Main {
                      "age INTEGER);";
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
+            conn.close();   // หยุดการเชื่อมต่อฐานข้อมูล
             System.out.println("สร้างตาราง users สำเร็จ!");
         } catch (SQLException e) {
             System.out.println("เกิดข้อผิดพลาดในการสร้างตาราง: " + e.getMessage());
@@ -92,6 +93,7 @@ public class Main {
                 insertData(conn, "Alice", 25);
                 insertData(conn, "Bob", 30);
                 fetchData(conn);
+                conn.close();   // หยุดการเชื่อมต่อฐานข้อมูล
             }
         } catch (SQLException e) {
             System.out.println("เกิดข้อผิดพลาด: " + e.getMessage());
