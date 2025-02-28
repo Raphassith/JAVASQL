@@ -43,6 +43,8 @@ public class Main {
 
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
+                Statement stmt = conn.createStatement();
+                stmt.execute("PRAGMA encoding = 'UTF-8';");
                 System.out.println("เชื่อมต่อ SQLite สำเร็จ!");
                 createTable(conn); // สร้างตาราง
             }
