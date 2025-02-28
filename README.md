@@ -86,6 +86,8 @@ public class Main {
 
         try (Connection conn = DriverManager.getConnection(url)) {
             if (conn != null) {
+                Statement stmt = conn.createStatement();
+                stmt.execute("PRAGMA encoding = 'UTF-8';");  // กำหนดให้สามารถรองรับ UTF8
                 System.out.println("เชื่อมต่อ SQLite สำเร็จ!");
                 insertData(conn, "Alice", 25);
                 insertData(conn, "Bob", 30);
