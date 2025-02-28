@@ -69,25 +69,3 @@ public class Main {
 
 ---
 
-### **5️⃣ รันโปรแกรมบน NetBeans**
-กด **Run (Shift + F6)**  
-📌 ถ้าไม่มี Error แสดงว่าโปรเจคทำงานได้ ✅  
-
----
-
-### **6️⃣ ถ้าใช้ Swing GUI ให้เพิ่ม JFrame**
-1. **สร้าง GUI**  
-   - **File → New → Swing GUI Form → JFrame Form**  
-   - ตั้งชื่อเช่น `UserForm`  
-2. ใช้ **Swing GUI Builder** เพื่อเพิ่มปุ่มและช่องกรอกข้อมูล  
-3. เขียนโค้ดให้เชื่อมต่อกับ SQLite  
-
----
-
-## **✅ สรุป**
-🔹 **NetBeans รองรับ Java + SQLite + Swing GUI**  
-🔹 **เพิ่ม SQLite JDBC (`sqlite-jdbc.jar`) ใน Libraries**  
-🔹 **คัดลอกโค้ดจาก Replit มาใช้ได้เลย**  
-🔹 **ถ้าใช้ GUI ให้เพิ่ม JFrame**  
-
-ลองทำดู ถ้ามีปัญหาบอกได้เลยครับ! 🚀😊
