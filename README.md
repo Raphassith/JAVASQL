@@ -32,7 +32,7 @@ SQLite ใช้ JDBC Driver (`sqlite-jdbc.jar`)
 ---
 
 ### **4️⃣ คัดลอกโค้ดจาก Replit ไป NetBeans**
-เปิดไฟล์ `Main.java` แล้วคัดลอกโค้ดจาก Replit มาใส่  
+เปิดไฟล์ `Main.java` พิมพ์ชุดคำสั่ง  
 
 ```java
 import java.sql.*;
