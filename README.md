@@ -129,3 +129,154 @@ public class Main {
     }
 }
 ```
+
+---
+
+### **📌 คำสั่งสำหรับจัดการโครงสร้างตารางใน SQLite**  
+SQLite ใช้ **SQL** มาตรฐานในการ **สร้าง (CREATE), ลบ (DROP), และแก้ไข (ALTER)** ตารางข้อมูล  
+
+---
+
+## **1️⃣ สร้างตาราง (`CREATE TABLE`)**  
+ใช้เมื่อ **ต้องการสร้างตารางใหม่** ในฐานข้อมูล  
+
+```sql
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- รหัสอัตโนมัติ
+    name TEXT NOT NULL,  -- ชื่อ (ต้องมีค่า)
+    age INTEGER,  -- อายุ
+    email TEXT UNIQUE  -- อีเมล (ต้องไม่ซ้ำกัน)
+);
+```
+
+📌 **หมายเหตุ:**  
+✅ `INTEGER PRIMARY KEY AUTOINCREMENT` → รันเลขอัตโนมัติ  
+✅ `TEXT NOT NULL` → ห้ามเว้นว่าง  
+✅ `UNIQUE` → ห้ามข้อมูลซ้ำ  
+
+**🔹 ตัวอย่างโค้ด Java**
+```java
+String sql = "CREATE TABLE IF NOT EXISTS users ("
+           + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+           + "name TEXT NOT NULL, "
+           + "age INTEGER, "
+           + "email TEXT UNIQUE);";
+try (Connection conn = DriverManager.getConnection("jdbc:sqlite:database.db");
+     Statement stmt = conn.createStatement()) {
+    stmt.execute(sql);
+    System.out.println("สร้างตาราง users สำเร็จ!");
+} catch (SQLException e) {
+    System.out.println("เกิดข้อผิดพลาด: " + e.getMessage());
+}
+```
+
+---
+
+## **2️⃣ ลบตาราง (`DROP TABLE`)**  
+ใช้เมื่อ **ต้องการลบตารางออกจากฐานข้อมูล**  
+
+```sql
+DROP TABLE IF EXISTS users;
+```
+
+📌 **หมายเหตุ:**  
+- `IF EXISTS` → ป้องกัน Error ถ้าตารางไม่มีอยู่  
+- คำสั่งนี้ **ลบข้อมูลทั้งหมดในตารางด้วย!**  
+
+**🔹 ตัวอย่างโค้ด Java**
+```java
+String sql = "DROP TABLE IF EXISTS users;";
+try (Connection conn = DriverManager.getConnection("jdbc:sqlite:database.db");
+     Statement stmt = conn.createStatement()) {
+    stmt.execute(sql);
+    System.out.println("ลบตาราง users สำเร็จ!");
+} catch (SQLException e) {
+    System.out.println("เกิดข้อผิดพลาด: " + e.getMessage());
+}
+```
+
+---
+
+## **3️⃣ แก้ไขโครงสร้างตาราง (`ALTER TABLE`)**  
+### **🟢 เพิ่มคอลัมน์ (`ADD COLUMN`)**  
+```sql
+ALTER TABLE users ADD COLUMN phone TEXT;
+```
+📌 **หมายเหตุ:**  
+- คำสั่งนี้ **ใช้เพิ่มคอลัมน์ใหม่เท่านั้น**  
+- SQLite **ไม่รองรับ** การลบหรือแก้ไขชนิดข้อมูลโดยตรง  
+
+**🔹 ตัวอย่างโค้ด Java**
+```java
+String sql = "ALTER TABLE users ADD COLUMN phone TEXT;";
+try (Connection conn = DriverManager.getConnection("jdbc:sqlite:database.db");
+     Statement stmt = conn.createStatement()) {
+    stmt.execute(sql);
+    System.out.println("เพิ่มคอลัมน์ phone สำเร็จ!");
+} catch (SQLException e) {
+    System.out.println("เกิดข้อผิดพลาด: " + e.getMessage());
+}
+```
+
+---
+
+### **🛑 วิธีแก้ไขหรือลบคอลัมน์ใน SQLite**
+เนื่องจาก **SQLite ไม่รองรับ `DROP COLUMN` หรือ `MODIFY COLUMN`**  
+✅ วิธีแก้คือ **สร้างตารางใหม่ → คัดลอกข้อมูล → ลบตารางเก่า**  
+
+**🔹 ตัวอย่าง: ลบคอลัมน์ `email` ออกจาก `users`**  
+```sql
+BEGIN TRANSACTION;
+
+CREATE TABLE users_new (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    age INTEGER
+);
+
+INSERT INTO users_new (id, name, age)
+SELECT id, name, age FROM users;
+
+DROP TABLE users;
+
+ALTER TABLE users_new RENAME TO users;
+
+COMMIT;
+```
+
+📌 **หมายเหตุ:**  
+- **สร้างตารางใหม่** (ไม่มี `email`)  
+- **คัดลอกข้อมูลเดิม** มาใส่  
+- **ลบตารางเก่า แล้วเปลี่ยนชื่อตารางใหม่**  
+
+**🔹 ตัวอย่างโค้ด Java**
+```java
+String[] sqls = {
+    "CREATE TABLE users_new (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, age INTEGER);",
+    "INSERT INTO users_new (id, name, age) SELECT id, name, age FROM users;",
+    "DROP TABLE users;",
+    "ALTER TABLE users_new RENAME TO users;"
+};
+try (Connection conn = DriverManager.getConnection("jdbc:sqlite:database.db");
+     Statement stmt = conn.createStatement()) {
+    for (String sql : sqls) {
+        stmt.execute(sql);
+    }
+    System.out.println("ลบคอลัมน์ email สำเร็จ!");
+} catch (SQLException e) {
+    System.out.println("เกิดข้อผิดพลาด: " + e.getMessage());
+}
+```
+
+---
+
+## **✅ สรุป**
+| คำสั่ง | คำอธิบาย |
+|--------|----------|
+| `CREATE TABLE` | สร้างตารางใหม่ |
+| `DROP TABLE` | ลบตารางออกจากฐานข้อมูล |
+| `ALTER TABLE ADD COLUMN` | เพิ่มคอลัมน์ใหม่ |
+| **การลบ/แก้ไขคอลัมน์** | ต้องใช้วิธี **สร้างตารางใหม่ + คัดลอกข้อมูล** |
+
+---
+
