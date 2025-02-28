@@ -13,7 +13,7 @@
 1. เปิด **NetBeans** แล้วเลือก  
    **File → New Project → Java with Ant → Java Application**  
 2. ตั้งชื่อโปรเจค เช่น `SQLiteProject`  
-3. เลือก **Create Main Class** (หรือใช้ `Main.java` จาก Replit)  
+3. เลือก **Create Main Class**  
 4. กด **Finish**  
 
 ---
