@@ -1,6 +1,8 @@
 # JAVASQL
 การเขียนโปรแกรมภาษา JAVA ทำงานร่วมกับ Database
 
+# JAVA กับ SQLite
+
 ### **1️⃣ ติดตั้ง Apache NetBeans**
 ดาวน์โหลดได้ที่  
 🔗 [https://netbeans.apache.org/download/](https://netbeans.apache.org/download/)  
@@ -280,3 +282,41 @@ try (Connection conn = DriverManager.getConnection("jdbc:sqlite:database.db");
 
 ---
 
+# JAVA กับ MySQL
+
+## **📌 วิธีดาวน์โหลดและติดตั้ง MySQL JDBC**
+### **1️⃣ ดาวน์โหลด MySQL JDBC Driver (`mysql-connector-java.jar`)**
+🔗 [ดาวน์โหลดที่นี่](https://dev.mysql.com/downloads/connector/j/)  
+เลือก **Platform Independent** → ดาวน์โหลดไฟล์ **`.zip`** แล้วแตกไฟล์  
+
+---
+
+### **2️⃣ เพิ่ม `mysql-connector-java.jar` ใน NetBeans**
+1. เปิด **NetBeans**
+2. ไปที่ **Projects → คลิกขวาที่ Libraries → Add JAR/Folder**
+3. เลือกไฟล์ **`mysql-connector-java-x.x.x.jar`** ที่ดาวน์โหลดมา
+4. กด **Open** → ตรวจสอบว่าไฟล์ถูกเพิ่มใน `Libraries` แล้ว  
+
+---
+
+### **3️⃣ ตั้งค่า `JDBC URL` ให้เชื่อมต่อ MySQL**
+```java
+String url = "jdbc:mysql://localhost:3306/mydatabase?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=UTC";
+String user = "root"; // ใส่ชื่อผู้ใช้ MySQL
+String password = ""; // ใส่รหัสผ่าน MySQL
+
+try (Connection conn = DriverManager.getConnection(url, user, password)) {
+    System.out.println("✅ เชื่อมต่อ MySQL สำเร็จ! (รองรับ utf8mb4)");
+} catch (SQLException e) {
+    System.out.println("❌ เกิดข้อผิดพลาด: " + e.getMessage());
+}
+```
+
+---
+
+## **✅ สรุป**
+✅ **ถ้าใช้ SQLite JDBC เดิม → ต้องดาวน์โหลด MySQL JDBC (`mysql-connector-java.jar`)**  
+✅ **ถ้าเคยมีแล้ว → ไม่ต้องโหลดใหม่ แค่เพิ่มไปที่ `Libraries`**  
+✅ **ตั้งค่า `JDBC URL` ให้รองรับ `utf8mb4`**  
+
+---
